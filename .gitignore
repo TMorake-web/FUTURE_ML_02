@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+artifacts/models/*.joblib
+customer_support_tickets.csv
+data/*.csv

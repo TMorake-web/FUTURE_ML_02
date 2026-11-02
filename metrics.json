@@ -1,0 +1,68 @@
+{
+  "dataset": "Zenodo Classification of IT Support Tickets",
+  "training_rows": 1572,
+  "test_rows": 657,
+  "category_count": 7,
+  "accuracy": 0.832572298325723,
+  "majority_baseline_accuracy": 0.3363774733637747,
+  "macro_f1": 0.8032823247501,
+  "weighted_f1": 0.8302376886913371,
+  "classification_report": {
+    "Active Directory": {
+      "precision": 0.5681818181818182,
+      "recall": 0.5102040816326531,
+      "f1-score": 0.5376344086021505,
+      "support": 49.0
+    },
+    "Computer-Services": {
+      "precision": 0.8947368421052632,
+      "recall": 0.8292682926829268,
+      "f1-score": 0.8607594936708861,
+      "support": 41.0
+    },
+    "EOL": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 58.0
+    },
+    "Fileservice": {
+      "precision": 0.9420289855072463,
+      "recall": 0.9420289855072463,
+      "f1-score": 0.9420289855072463,
+      "support": 138.0
+    },
+    "O365": {
+      "precision": 0.7640449438202247,
+      "recall": 0.7391304347826086,
+      "f1-score": 0.7513812154696132,
+      "support": 92.0
+    },
+    "Software": {
+      "precision": 0.74,
+      "recall": 0.6379310344827587,
+      "f1-score": 0.6851851851851852,
+      "support": 58.0
+    },
+    "Support general": {
+      "precision": 0.8125,
+      "recall": 0.8823529411764706,
+      "f1-score": 0.8459869848156182,
+      "support": 221.0
+    },
+    "accuracy": 0.832572298325723,
+    "macro avg": {
+      "precision": 0.8173560842306503,
+      "recall": 0.7915593957520949,
+      "f1-score": 0.8032823247501,
+      "support": 657.0
+    },
+    "weighted avg": {
+      "precision": 0.8299844055535549,
+      "recall": 0.832572298325723,
+      "f1-score": 0.8302376886913371,
+      "support": 657.0
+    }
+  },
+  "priority_method": "transparent keyword rules; no labeled priority column is available"
+}
