@@ -4,15 +4,17 @@ This project trains a text classifier for support ticket categories and uses sim
 
 ## Dataset
 
-Data used id the Zenodo Classification of IT Support Tickets dataset](https://zenodo.org/records/7648117). It contains 2,229 manually classified support tickets in seven categories. Zenodo describes the tickets as manually classified by three IT support professionals and says personal information was removed.
+The [Future Interns Task 2 page](https://futureinterns.com/machine-learning-task-2-2026/) recommends the [Zenodo Classification of IT Support Tickets dataset](https://zenodo.org/records/7648117). It contains 2,229 manually classified support tickets in seven categories. Zenodo describes the tickets as manually classified by three IT support professionals and says personal information was removed.
 
-Download these four files from the Zenodo record and place them in :
+Download these four files from the Zenodo record and place them in `data/`:
 
+```text
 data/
 ├── X_train.csv
 ├── y_train.csv
 ├── X_test.csv
 └── y_test.csv
+```
 
 The feature CSVs contain `id` and `text`; label CSVs contain `id` and `category_truth`. The script joins features and labels by ticket ID and uses only the ticket text and category.
 
@@ -20,14 +22,23 @@ The feature CSVs contain `id` and `text`; label CSVs contain `id` and `category_
 
 Use the existing `.venv` environment:
 
+```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
 
 Train and evaluate the category model:
 
-
+```powershell
 .\.venv\Scripts\python.exe train_model.py
+```
 
-The model uses word and character TF-IDF features with a linear SVM. It evaluates on Zenodo's provided test split and reports accuracy, macro F1, weighted F1, per-category precision and recall, and a confusion matrix. The majority-class baseline is shown for comparison.
+The model uses word and character TF-IDF features with a linear SVM. It evaluates on Zenodo's provided test split and reports accuracy, macro F1, weighted F1, per-category precision and recall, and a confusion matrix. The majority-class baseline is shown for comparison. The training script also generates a plain-language results image from the saved metrics.
+
+## Results at a glance
+
+On the held-out test set, the model sorted **547 of 657 tickets correctly (83.3%)**. A simple guess that always chooses the most common category would score **33.6%** on this split. The 49.6 percentage-point difference compares the model with that simple baseline, not with an earlier trained model.
+
+![Plain-language summary of ticket classification results](artifacts/reports/results_overview.png)
 
 ## Priority tagging
 
@@ -43,17 +54,24 @@ These priority labels are heuristic, not ground truth. Do not report priority ac
 
 After training:
 
+```powershell
 .\.venv\Scripts\python.exe predict_ticket.py "Our production system is down and many users are affected"
+```
+
 The output includes an ML-predicted category and a rule-based priority.
 
 ## Output files
 
+```text
 artifacts/
 ├── models/category_model.joblib
 └── reports/
+    ├── results_overview.png
     ├── category_confusion_matrix.png
     └── metrics.json
+```
 
+`results_overview.png` compares the model with the majority-class baseline and shows the share of tickets correctly sorted within each category. Its baseline comparison is not a comparison with an earlier trained model.
 
 ## Limitation
 
