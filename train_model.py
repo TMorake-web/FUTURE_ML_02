@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
+import sys
 import unicodedata
 from pathlib import Path
 
@@ -157,6 +159,22 @@ def main() -> None:
     metrics_path = reports_dir / "metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
 
+    # Build the plain-language overview from the metrics just written, so the
+    # visual is reproducible whenever this training script is run.
+    overview_script = Path(__file__).with_name("make_results_overview.py")
+    overview_path = reports_dir / "results_overview.png"
+    subprocess.run(
+        [
+            sys.executable,
+            str(overview_script),
+            "--metrics",
+            str(metrics_path),
+            "--output",
+            str(overview_path),
+        ],
+        check=True,
+    )
+
     # A confusion matrix shows which real categories were predicted as others.
     display = ConfusionMatrixDisplay.from_predictions(
         test["category_truth"], predictions, labels=labels, xticks_rotation=45, cmap="Blues"
@@ -174,6 +192,7 @@ def main() -> None:
     print(f"Macro F1: {macro_f1:.3f} | weighted F1: {weighted_f1:.3f}")
     print(classification_report(test["category_truth"], predictions, zero_division=0))
     print(f"Saved model and reports under: {output_dir.resolve()}")
+    print(f"Plain-language results image: {overview_path.resolve()}")
     print("Priority levels are assigned by rules; this dataset has no priority labels to evaluate.")
 
 
