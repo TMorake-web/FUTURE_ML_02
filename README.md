@@ -1,12 +1,18 @@
 # Support Ticket Classification
 
-This project trains a text classifier for support ticket categories and uses simple, documented rules to assign High, Medium, or Low priority.
+## Project Overview
+
+This project builds a support-ticket classification prototype. It predicts one of seven ticket categories from the ticket text and assigns a High, Medium, or Low priority using documented keyword rules.
+
+The category is predicted by a machine-learning model. Priority is assigned by rules because the dataset does not include priority labels.
 
 ## Dataset
 
-The [Future Interns Task 2 page](https://futureinterns.com/machine-learning-task-2-2026/) recommends the [Zenodo Classification of IT Support Tickets dataset](https://zenodo.org/records/7648117). It contains 2,229 manually classified support tickets in seven categories. Zenodo describes the tickets as manually classified by three IT support professionals and says personal information was removed.
+This project uses the [Classification of IT Support Tickets dataset on Zenodo](https://zenodo.org/records/7648117), recommended by the [Future Interns Task 2 brief](https://futureinterns.com/machine-learning-task-2-2026/).
 
-Download these four files from the Zenodo record and place them in `data/`:
+The dataset contains 2,229 manually classified support tickets in seven categories. Zenodo states that three IT support professionals classified the tickets and that personal information was removed.
+
+Download these four files from the Zenodo record and place them in the project's `data/` folder:
 
 ```text
 data/
@@ -16,11 +22,54 @@ data/
 └── y_test.csv
 ```
 
-The feature CSVs contain `id` and `text`; label CSVs contain `id` and `category_truth`. The script joins features and labels by ticket ID and uses only the ticket text and category.
+The feature files contain `id` and `text` columns. The label files contain `id` and `category_truth` columns. The training script joins features and labels by ticket ID and uses the ticket text and category.
+
+The dataset files are not included in this repository. Download them from Zenodo before running the scripts.
+
+## Technologies
+
+- Python
+- Pandas
+- Scikit-learn
+- Matplotlib
+
+## How the Category Model Works
+
+The model cleans ticket text and converts it into word and character TF-IDF features. A linear Support Vector Machine (SVM) uses those features to predict one of seven categories.
+
+The model is evaluated using Zenodo's provided held-out test set. The script reports accuracy, macro F1, weighted F1, per-category precision and recall, and a confusion matrix. It also compares the results with a majority-class baseline.
+
+## Results
+
+On the held-out test set, the model classified **547 of 657 tickets correctly**, for an accuracy of **83.3%**. A baseline that always guesses the most common category would score **33.6%** on this test set. That is a difference of 49.6 percentage points compared with the baseline.
+
+These results describe this test set; they do not guarantee the same performance on new tickets.
+
+![Plain-language summary of ticket classification results](artifacts/reports/results_overview.png)
+
+![Category classification confusion matrix](artifacts/reports/category_confusion_matrix.png)
+
+## Priority Tagging
+
+The dataset has category labels but no priority labels. The project therefore assigns priority using explicit keyword rules in `priority_rules.py`:
+
+- **High:** outage, security breach, compromised account, emergency, urgent, critical, and similar severe terms.
+- **Medium:** errors, failed services, access problems, and other issues.
+- **Low:** messages that do not match the High or Medium rules.
+
+These priority labels are heuristic estimates, not ground truth. The project does not report priority accuracy, and priority is not a trained machine-learning prediction.
 
 ## Setup in VS Code on Windows
 
-Use the existing `.venv` environment:
+Download the four dataset files from Zenodo and place them in the project's `data/` folder.
+
+Open the project folder in VS Code. In the PowerShell terminal, create a virtual environment:
+
+```powershell
+python -m venv .venv
+```
+
+Install the required libraries:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -32,47 +81,39 @@ Train and evaluate the category model:
 .\.venv\Scripts\python.exe train_model.py
 ```
 
-The model uses word and character TF-IDF features with a linear SVM. It evaluates on Zenodo's provided test split and reports accuracy, macro F1, weighted F1, per-category precision and recall, and a confusion matrix. The majority-class baseline is shown for comparison. The training script also generates a plain-language results image from the saved metrics.
-
-## Results at a glance
-
-On the held-out test set, the model sorted **547 of 657 tickets correctly (83.3%)**. A simple guess that always chooses the most common category would score **33.6%** on this split. The 49.6 percentage-point difference compares the model with that simple baseline, not with an earlier trained model.
-
-![Plain-language summary of ticket classification results](artifacts/reports/results_overview.png)
-
-## Priority tagging
-
-Zenodo's dataset has category labels but no priority labels. The project therefore assigns priority using explicit keyword rules in `priority_rules.py`:
-
-- **High:** outage, security breach, compromised account, emergency/urgent/critical, and similar severe terms.
-- **Medium:** errors, failed services, access problems, and other issues.
-- **Low:** messages that do not match the High or Medium rules.
-
-These priority labels are heuristic, not ground truth. Do not report priority accuracy or describe priority as a trained ML prediction unless you obtain independently labeled priority data.
-
-## Try a ticket
-
-After training:
+Try a ticket:
 
 ```powershell
 .\.venv\Scripts\python.exe predict_ticket.py "Our production system is down and many users are affected"
 ```
 
-The output includes an ML-predicted category and a rule-based priority.
+The prediction output includes an ML-predicted category and a rule-based priority.
 
-## Output files
+## Output Files
+
+Running the training script creates:
 
 ```text
 artifacts/
-├── models/category_model.joblib
+├── models/
+│   └── category_model.joblib
 └── reports/
     ├── results_overview.png
     ├── category_confusion_matrix.png
     └── metrics.json
 ```
 
-`results_overview.png` compares the model with the majority-class baseline and shows the share of tickets correctly sorted within each category. Its baseline comparison is not a comparison with an earlier trained model.
+The saved model is generated locally and is not included in the repository. The reports contain the evaluation results and visualizations.
 
-## Limitation
+## Limitations
 
-The category model is a decision-support prototype and can make mistakes, especially on multilingual or ambiguous tickets. Review its test metrics before describing performance, and do not use it as the sole basis for real support decisions.
+The category model is a decision-support prototype. It can make mistakes, especially with multilingual or ambiguous tickets. Review the ticket and the model's results before taking action.
+
+Priority depends on the listed keyword rules. Wording that the rules do not recognize may receive an unsuitable priority. The priority labels have not been evaluated against human-assigned priority labels.
+
+## Project Information
+
+- **Program:** Future Interns Machine Learning Internship
+- **Track:** Machine Learning
+- **Task:** Task 2 — Support Ticket Classification
+- **Repository:** `FUTURE_ML_02`
