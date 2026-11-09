@@ -59,6 +59,12 @@ The dataset has category labels but no priority labels. The project therefore as
 
 These priority labels are heuristic estimates, not ground truth. The project does not report priority accuracy, and priority is not a trained machine-learning prediction.
 
+## How this could help a support team
+
+The predicted category could help staff send a ticket to the right support queue. The keyword-based priority label could flag urgent or security-related wording for earlier human review. A team member should check the suggestion before acting on it.
+
+This prototype has not been integrated into a live help desk, and the project has not measured whether it reduces response time or staff workload.
+
 ## Setup in VS Code on Windows
 
 Download the four dataset files from Zenodo and place them in the project's `data/` folder.
